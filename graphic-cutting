@@ -1,0 +1,254 @@
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+from matplotlib.widgets import Button
+from rectpack import newPacker
+from rectpack import skyline
+from rectpack import guillotine
+from rectpack import  SORT_AREA, SORT_PERI, SORT_DIFF, SORT_SSIDE, \
+    SORT_LSIDE, SORT_RATIO, SORT_NONE
+
+def optimizacion(packer):
+    # Obtain number of bins used for packing
+    nbins = len(packer)
+    print(nbins)
+    
+
+    fig, ax = plt.subplots()
+    
+    plt.subplots_adjust(bottom=0.2)
+    # Index first bin
+    abin = packer[0]
+
+
+
+# Bin dimmensions (bins can be reordered during packing)
+    width, height = abin.width, abin.height
+    ax.plot([0,height],[0,0],color='white',markersize=1)
+    ax.plot([0,0],[0,width],color='white',markersize=1)
+    ax.add_patch(
+        patches.Rectangle(
+            (0, 0),
+            height,
+            width,
+            edgecolor = 'black',
+            facecolor = 'gray',
+            fill=True
+        ) )
+# Number of rectangles packed into first bin
+    nrect = len(packer[0])
+    for rec in packer[0]:
+        rect = rec
+
+    # rect is a Rectangle object
+        x = rect.x # rectangle bottom-left x coordinate
+        y = rect.y # rectangle bottom-left y coordinate
+        w = rect.width
+        h = rect.height
+        ID = rect.rid
+
+        ax.add_patch(
+            patches.Rectangle(
+                (y, x),
+                h,
+                w,
+                edgecolor = 'black',
+                facecolor = 'yellow',
+                fill=True,
+            
+                
+            ))
+
+        plt.text(y+20, x+0.5*(w), str(w),  #texto letras 1800
+                horizontalalignment='left',
+                verticalalignment='center',
+                fontsize=8, color='black',
+                rotation='vertical',
+                )
+
+        ax.text(y+0.5*h, x, str(h),
+                horizontalalignment='left',
+                verticalalignment='bottom',
+                fontsize=8, color='black'
+                )
+        if (str(ID)!= "None"):        
+            ax.text(0.5*(y+h)+0.5*y, 0.5*(x+w)+0.5*x, str(ID),
+                    horizontalalignment='center',
+                    verticalalignment='center',
+                    fontsize=8, color='black',
+                    )
+        
+
+
+
+    class Index(object):
+        ind = 0
+
+        def next(self, event):
+            for txt in ax.texts:
+                txt.set_visible(False)
+                            # Index first bin
+            abin = packer[self.ind]
+        # Bin dimmensions (bins can be reordered during packing)
+            width, height = abin.width, abin.height
+            ax.add_patch(
+                patches.Rectangle(
+                (0, 0),
+                height,
+                width,
+                edgecolor = 'black',
+                facecolor = 'whitesmoke',
+                fill=True
+                ) )
+            self.ind += 1
+            if self.ind == nbins:
+                self.ind = nbins - 1
+            
+                # Index first bin
+            abin = packer[self.ind]
+        # Bin dimmensions (bins can be reordered during packing)
+            width, height = abin.width, abin.height
+            ax.plot([0,height],[0,0])
+            ax.plot([0,0],[0,2000])
+            ax.add_patch(
+                patches.Rectangle(
+                    (0, 0),
+                    height,
+                    width,
+                    edgecolor = 'black',
+                    facecolor = 'gray',
+                    fill=True
+                ) )
+        # Number of rectangles packed into first bin
+            nrect = len(packer[self.ind])
+            for rec in packer[self.ind]:
+                rect = rec
+
+            # rect is a Rectangle object
+                x = rect.x # rectangle bottom-left x coordinate
+                y = rect.y # rectangle bottom-left y coordinate
+                w = rect.width
+                h = rect.height
+                ID = rect.rid
+
+                ax.add_patch(
+                    patches.Rectangle(
+                        (y, x),
+                        h,
+                        w,
+                        edgecolor = 'black',
+                        facecolor = 'yellow',
+                        fill=True,
+                    
+                        
+                    ))
+
+                plt.text(y+20, x+0.5*(w), str(w),  #texto letras 1800
+                        horizontalalignment='left',
+                        verticalalignment='center',
+                        fontsize=8, color='black',
+                        rotation='vertical',
+                        )
+
+                ax.text(y+0.5*h, x, str(h),
+                        horizontalalignment='left',
+                        verticalalignment='bottom',
+                        fontsize=8, color='black'
+                        )
+                if (str(ID)!= "None"):        
+                    ax.text(0.5*(y+h)+0.5*y, 0.5*(x+w)+0.5*x, str(ID),
+                            horizontalalignment='center',
+                            verticalalignment='center',
+                            fontsize=8, color='black',
+                            )
+
+            plt.draw()
+
+        def prev(self, event):
+            for txt in ax.texts:
+                txt.set_visible(False)
+            abin = packer[self.ind]
+        # Bin dimmensions (bins can be reordered during packing)
+            width, height = abin.width, abin.height
+            ax.add_patch(
+                patches.Rectangle(
+                (0, 0),
+                height,
+                width,
+                edgecolor = 'black',
+                facecolor = 'whitesmoke',
+                fill=True
+                ) )
+            self.ind -= 1
+            if self.ind < 0:
+                self.ind = 0
+            
+                # Index first bin
+            abin = packer[self.ind]
+
+        # Bin dimmensions (bins can be reordered during packing)
+            width, height = abin.width, abin.height
+            ax.plot([0,height],[0,0])
+            ax.plot([0,0],[0,2000])
+            ax.add_patch(
+                patches.Rectangle(
+                    (0, 0),
+                    height,
+                    width,
+                    edgecolor = 'black',
+                    facecolor = 'gray',
+                    fill=True
+                ) )
+        # Number of rectangles packed into first bin
+            nrect = len(packer[self.ind])
+            for rec in packer[self.ind]:
+                rect = rec
+
+            # rect is a Rectangle object
+                x = rect.x # rectangle bottom-left x coordinate
+                y = rect.y # rectangle bottom-left y coordinate
+                w = rect.width
+                h = rect.height
+                ID = rect.rid
+
+                ax.add_patch(
+                    patches.Rectangle(
+                        (y, x),
+                        h,
+                        w,
+                        edgecolor = 'black',
+                        facecolor = 'yellow',
+                        fill=True,
+                    
+                        
+                    ))
+
+                plt.text(y+20, x+0.5*(w), str(w),  #texto letras 1800
+                        horizontalalignment='left',
+                        verticalalignment='center',
+                        fontsize=8, color='black',
+                        rotation='vertical',
+                        )
+
+                ax.text(y+0.5*h, x, str(h),
+                        horizontalalignment='left',
+                        verticalalignment='bottom',
+                        fontsize=8, color='black'
+                        )
+                if (str(ID)!= "None"):        
+                    ax.text(0.5*(y+h)+0.5*y, 0.5*(x+w)+0.5*x, str(ID),
+                            horizontalalignment='center',
+                            verticalalignment='center',
+                            fontsize=8, color='black',
+                            )
+            plt.draw()
+
+    callback = Index()
+    axprev = plt.axes([0.7, 0.05, 0.1, 0.075])
+    axnext = plt.axes([0.81, 0.05, 0.1, 0.075])
+    bnext = Button(axnext, 'Next')
+    bnext.on_clicked(callback.next)
+    bprev = Button(axprev, 'Previous')
+    bprev.on_clicked(callback.prev)
+    
+    plt.suptitle('Cantidad de placas:' + str(nbins))
+    plt.show()
